@@ -1,5 +1,25 @@
 import dbHandler as db
+from dbHandler import getUserInfo
+'''
 
+class Mediator:
+	handlerMap = {
+		'get info' : getUserInfo
+	}
+
+	def handle(self, request):
+		action,_ = request
+		handlerType = self.handlerMap[action]
+		handler = handlerType()
+
+		return handler.handler(request)
+
+	def handleData(self, action, data):
+		if action == "help":
+			return "Commands:\nget info\nget items\nadd list [list_name]\nadd item [item_name] [item_calories] [item_date] in [list_name]\n"
+		elif action == "add list":
+			return db.insertGList(conn, db.getUserId(conn, username), text.split()[2])
+'''
 def processCMD(conn, username, text):
 	if text == "help":
 		return "Commands:\nget info\nget items\nadd list [list_name]\nadd item [item_name] [item_calories] [item_date] in [list_name]\n"

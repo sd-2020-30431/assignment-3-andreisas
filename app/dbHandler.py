@@ -3,7 +3,20 @@ import sqlite3
 
 conntest = sqlite3.connect('Wasteapp.db')
 conntest.row_factory = sqlite3.Row
+'''
+class UserInfoHandler(self, request):
+	def handle(self, request):
+		return self.getUserInfo(conntest, username)
 
+	def getUserInfo(self, conn, username):
+		text = ""
+		cursor = conn.cursor()
+		cursor.execute('SELECT * FROM User WHERE name=?', (username, ))
+		result = cursor.fetchone()
+		text += "Id: " + str(result['id']) + "    Name: " + result['name'] + "    Password: " + result['password']
+
+		return text
+'''
 def getUserInfo(conn, username):
 	text = ""
 	cursor = conn.cursor()
@@ -23,7 +36,17 @@ def getUserItems(conn, username):
 		text += "id: " + str(row['id']) + "    name: " + row['name'] + "    cals: " + str(row['cals']) + "    exp_date: " + str(row['exp_date']) + "\n"
 	return text
 
-	return text
+def insertItem(conn, glistid, name, cals, exp_date):
+	cursor = conn.cursor()
+	cursor.execute('INSERT INTO Item(glistid, name, cals, exp_date) VALUES(?, ?, ?, ?)', (glistid, name, int(cals), str(exp_date)))
+	conn.commit()
+	return "Success"
+
+def insertGList(conn, userid, name):
+	cursor = conn.cursor()
+	cursor.execute('INSERT INTO GList(userid, name) VALUES(?, ?)', (userid, name, ))
+	conn.commit()
+	return "Success"
 
 def insertUser(conn, name, password):
 	cursor = conn.cursor()
@@ -78,13 +101,6 @@ def getUserPassword(conn, id):
 	cursor.execute('SELECT password FROM User WHERE id=?', (id, ))
 	return cursor.fetchone()[0]
 
-
-def insertGList(conn, userid, name):
-	cursor = conn.cursor()
-	cursor.execute('INSERT INTO GList(userid, name) VALUES(?, ?)', (userid, name, ))
-	conn.commit()
-	return "Success"
-
 def getItemsOfGList(conn, glistid):
 	cursor = conn.cursor()
 	cursor.execute('SELECT * FROM Item WHERE glistid=?', (glistid, ))
@@ -107,11 +123,7 @@ def getGListId(conn, username, listname):
 	else:
 		return None
 
-def insertItem(conn, glistid, name, cals, exp_date):
-	cursor = conn.cursor()
-	cursor.execute('INSERT INTO Item(glistid, name, cals, exp_date) VALUES(?, ?, ?, ?)', (glistid, name, int(cals), str(exp_date)))
-	conn.commit()
-	return "Success"
+
 
 def getItemId(conn, name):
 	cursor = conn.cursor()

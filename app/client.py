@@ -104,7 +104,6 @@ while True:
 				print(f'{item[3]:<10}: calories {item[5]} expires {item[7]}\n')
 			for i in items:
 				if i != "":
-					print(i + "\n")
 					it = i.split()
 					print_item(it)
 		else:	
