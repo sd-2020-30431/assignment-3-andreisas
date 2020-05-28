@@ -96,21 +96,6 @@ while True:
 		client_socket.send(message_header + message)								#send the message
 		newMessage = tryGetMessage(client_socket)
 		mediator.handleData(newMessage)
-		'''
-		if ok == 1:
-			print("get items")
-			items = newMessage.split("\n")
-			@report
-			def print_item(item):
-				print(f'{item[3]:<10}: calories {item[5]} expires {item[7]}\n')
-			for i in items:
-				if i != "":
-					it = i.split()
-					print_item(it)
-		else:	
-			print(newMessage)
-		'''
-	
 
 
 
