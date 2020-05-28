@@ -2,12 +2,9 @@ import socket
 import time
 import pickle
 import select
-import sqlite3
 import dbHandler as db
-import mediator as med
+from mediator import Mediator
 
-conn = sqlite3.connect('Wasteapp.db')
-conn.row_factory = sqlite3.Row
 
 HEADER_LENGTH = 10
 IP = "127.0.0.1"
@@ -46,6 +43,7 @@ def listToString(s):
     # return string   
     return str1  
 
+mediator = Mediator()
 
 while True:
 	read_sockets, _, exception_sockets = select.select(sockets_list, [], sockets_list)
@@ -58,7 +56,7 @@ while True:
 
 			if user is False:											#If the server gets something
 				continue
-			elif db.userExists(conn, user['data'].decode('utf-8').split()[0], user['data'].decode('utf-8').split()[1]) is not None:
+			elif db.userExists(user['data'].decode('utf-8').split()[0], user['data'].decode('utf-8').split()[1]) is not None:
 				#If we can create the new user
 				sockets_list.append(client_socket)							#Let the user enter
 
@@ -79,14 +77,12 @@ while True:
 
 			user = clients[notified_socket]																		#Get the pipe
 			print(f"Received message from {user['data'].decode('utf-8')}: {message['data'].decode('utf-8')}")	#Print on server console what it received
-			
-			result = med.processCMD(conn, user['data'].decode('utf-8').split()[0], message['data'].decode('utf-8'))
 
-			notified_socket.send(f"{len(result):<{HEADER_LENGTH}}".encode('utf-8') + result.encode('utf-8'))
+			action, result = mediator.handle(user['data'].decode('utf-8').split()[0] + " " + message['data'].decode('utf-8'))
+			forwardMessage = action + " " + result
 
-
-			#notified_socket.send(f"{len(db.getUserPassword(conn, int(message['data']))):<{HEADER_LENGTH}}".encode('utf-8') + db.getUserPassword(conn, int(message['data'])).encode('utf-8'))
-
+			if action is not None:
+				notified_socket.send(f"{len(forwardMessage):<{HEADER_LENGTH}}".encode('utf-8') + forwardMessage.encode('utf-8'))
 	
 	for notified_socket in exception_sockets:
 		sockets_list.remove(notified_socket)

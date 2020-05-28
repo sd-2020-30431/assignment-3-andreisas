@@ -5,6 +5,7 @@ import select
 import errno
 import sys
 from decorators import report
+from mediator import Mediator
 
 HEADER_LENGTH = 10
 IP = "127.0.0.1"
@@ -67,6 +68,7 @@ client_socket.connect((IP, PORT))
 client_socket.setblocking(False)
 my_username = ""
 my_password = ""
+mediator = Mediator()
 
 while True:										#Login
 	my_username = input("Username: ")
@@ -89,13 +91,12 @@ while True:
 	message = input(f"{my_username.split()[0]} > ")
 
 	if message:
-		ok = 0
-		if message == "get items":
-			ok = 1
 		message = message.encode('utf-8')											#encode the message
 		message_header = f"{len(message) :< {HEADER_LENGTH}}".encode('utf-8')		#encode the message header
 		client_socket.send(message_header + message)								#send the message
 		newMessage = tryGetMessage(client_socket)
+		mediator.handleData(newMessage)
+		'''
 		if ok == 1:
 			print("get items")
 			items = newMessage.split("\n")
@@ -108,7 +109,7 @@ while True:
 					print_item(it)
 		else:	
 			print(newMessage)
-
+		'''
 	
 
 
