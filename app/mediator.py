@@ -1,6 +1,6 @@
 import dbHandler as db
 from dbHandler import UserInfoHandler, AddItemHandler, AddListHandler, getHelpHandler, UserItemsHandler
-from decorators import report
+from decorators import MyDecorator
 
 class Mediator:
 	handlerMap = {
@@ -33,10 +33,10 @@ class Mediator:
 			print(data[9:])
 		elif "get items" in data:
 			items = data[10:].split("\n")
-			@report
-			def print_item(item):
+			@MyDecorator
+			def function(item):
 				print(f'{item[3]:<10}: calories {item[5]} expires {item[7]}\n')
 			for i in items:
 				if len(i)>1:
 					it = i.split()
-					print_item(it)
+					function(it)

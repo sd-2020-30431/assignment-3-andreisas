@@ -4,7 +4,6 @@ import pickle
 import select
 import errno
 import sys
-from decorators import report
 from mediator import Mediator
 
 HEADER_LENGTH = 10
